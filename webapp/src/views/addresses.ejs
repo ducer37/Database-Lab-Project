@@ -1,0 +1,78 @@
+<!-- views/addresses.ejs -->
+<div class="row">
+    <!-- Add Address Form -->
+    <div class="col-md-5">
+        <div class="card mb-4 bg-light">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">📍 Add New Address</h5>
+            </div>
+            <div class="card-body">
+                <form action="/addresses/add" method="POST">
+                     <div class="mb-3">
+                        <label class="form-label fw-bold">User ID</label>
+                        <input type="number" name="user_id" class="form-control" value="<%= userId %>" required placeholder="Your ID">
+                     </div>
+                     <div class="mb-3">
+                        <label class="form-label">Recipient Name</label>
+                        <input type="text" name="recipient_name" class="form-control" required>
+                     </div>
+                     <div class="mb-3">
+                        <label class="form-label">Phone</label>
+                        <input type="text" name="phone" class="form-control" required>
+                     </div>
+                     <div class="row">
+                         <div class="col-6 mb-3">
+                            <label class="form-label">City</label>
+                            <input type="text" name="city" class="form-control" required>
+                         </div>
+                         <div class="col-6 mb-3">
+                            <label class="form-label">District</label>
+                            <input type="text" name="district" class="form-control" placeholder="Optional">
+                         </div>
+                     </div>
+                     <div class="mb-3">
+                        <label class="form-label">Detailed Address</label>
+                        <textarea name="detail" class="form-control" required placeholder="House number, Street name..."></textarea>
+                     </div>
+                     <button type="submit" class="btn btn-dark w-100">Save Address</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Address List -->
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">📖 Address Book</h5>
+                <form action="/addresses" method="GET" class="d-flex" style="width: 200px;">
+                    <input type="number" name="user_id" class="form-control me-2" placeholder="User ID" value="<%= userId || '' %>" required>
+                    <button class="btn btn-secondary btn-sm">Load</button>
+                </form>
+            </div>
+            <div class="card-body">
+                <% if (addresses && addresses.length > 0) { %>
+                    <div class="list-group">
+                        <% addresses.forEach(a => { %>
+                            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1"><%= a.recipient_name %> <small class="text-muted text-sm">(<%= a.phone %>)</small></h5>
+                                    <p class="mb-1"><%= a.detail %>, <%= a.district || '' %>, <%= a.city %></p>
+                                    <% if(a.is_default) { %> <span class="badge bg-primary">Default</span> <% } %>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-warning text-dark fs-6">ID: <%= a.address_id %></span>
+                                    <div class="small text-muted mt-1">Use this ID at Checkout</div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } else if (userId) { %>
+                    <div class="alert alert-info">No addresses found. Please add one.</div>
+                <% } else { %>
+                    <div class="alert alert-warning">Enter User ID to view addresses.</div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

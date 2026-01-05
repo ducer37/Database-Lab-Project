@@ -1,0 +1,64 @@
+<!-- views/vouchers.ejs -->
+<div class="row">
+    <!-- Collect Voucher Form -->
+    <div class="col-md-4 mb-4">
+        <div class="card bg-success bg-opacity-10 border-success">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">🎁 Collect Voucher</h5>
+            </div>
+            <div class="card-body">
+                <form action="/vouchers/collect" method="POST">
+                     <div class="mb-3">
+                        <label class="form-label fw-bold">User ID</label>
+                        <input type="number" name="user_id" class="form-control" value="<%= userId %>" required placeholder="Your ID">
+                     </div>
+                     <div class="mb-3">
+                        <label class="form-label fw-bold">Voucher Code</label>
+                        <input type="text" name="voucher_code" class="form-control" required placeholder="e.g. WELCOME50">
+                     </div>
+                     <button type="submit" class="btn btn-success w-100">Collect Now</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- My Vouchers List -->
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">🎟️ My Wallet</h5>
+                <form action="/vouchers" method="GET" class="d-flex" style="width: 200px;">
+                    <input type="number" name="user_id" class="form-control me-2" placeholder="User ID" value="<%= userId || '' %>" required>
+                    <button class="btn btn-light btn-sm">Load</button>
+                </form>
+            </div>
+            <div class="card-body">
+                <% if (vouchers && vouchers.length > 0) { %>
+                    <div class="row">
+                        <% vouchers.forEach(v => { %>
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-<%= v.status === 'READY' ? 'primary' : 'secondary' %> h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <h5 class="card-title text-primary"><%= v.code %></h5>
+                                            <span class="badge bg-<%= v.status === 'READY' ? 'success' : 'secondary' %>"><%= v.status %></span>
+                                        </div>
+                                        <h3 class="fw-bold"><%= v.value.toLocaleString() %> <%= v.type === 'PERCENT' ? '%' : 'đ' %></h3>
+                                        <p class="card-text small text-muted">Expires: <%= new Date(v.end_date).toLocaleDateString() %></p>
+                                    </div>
+                                    <div class="card-footer bg-light text-center small">
+                                        ID: <%= v.voucher_id %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } else if (userId) { %>
+                    <div class="alert alert-info">No vouchers found for User ID <%= userId %>. Try collecting one!</div>
+                <% } else { %>
+                    <div class="alert alert-warning">Please enter User ID to view vouchers.</div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

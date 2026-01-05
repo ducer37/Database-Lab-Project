@@ -1,0 +1,72 @@
+<!-- views/login.ejs -->
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2 class="text-center mb-4">🔐 Auth Portal</h2>
+        
+        <ul class="nav nav-tabs mb-3" id="authTab" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button">Login</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button">Register</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="authTabContent">
+            <!-- Login Form -->
+            <div class="tab-pane fade show active" id="login">
+                <div class="card p-4">
+                    <form action="/login" method="POST">
+                        <div class="mb-3">
+                            <label>Email</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Password</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Login (Get ID)</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Register Form -->
+            <div class="tab-pane fade" id="register">
+                <div class="card p-4">
+                    <form action="/register" method="POST">
+                        <div class="mb-3">
+                            <label>Full Name</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Email</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Phone</label>
+                            <input type="text" name="phone" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label>Password</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Register New User</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <% if (typeof userId !== 'undefined') { %>
+            <div class="alert alert-success mt-4 text-center">
+                <h4>🎉 Operation Successful!</h4>
+                <p>Your User ID is:</p>
+                <h1 class="display-3 fw-bold text-danger"><%= userId %></h1>
+                <p>⚠️ Copy this ID to use in Cart actions.</p>
+                <div class="d-grid gap-2">
+                    <a href="/products" class="btn btn-outline-dark">Go to Products</a>
+                    <a href="/cart?user_id=<%= userId %>" class="btn btn-outline-dark">Go to Cart</a>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>

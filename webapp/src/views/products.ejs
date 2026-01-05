@@ -1,0 +1,80 @@
+<!-- views/products.ejs -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="mb-3">🛒 Product Catalog & Filter Test</h2>
+        <div class="card bg-light">
+            <div class="card-body">
+                <form action="/products" method="GET" class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Keyword</label>
+                        <input type="text" name="keyword" class="form-control" placeholder="Laptop..." value="<%= query.keyword || '' %>">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Category Slug</label>
+                        <input type="text" name="category_slug" class="form-control" placeholder="electronics" value="<%= query.category_slug || '' %>">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Min Price</label>
+                        <input type="number" name="min_price" class="form-control" placeholder="0" value="<%= query.min_price || '' %>">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Max Price</label>
+                        <input type="number" name="max_price" class="form-control" placeholder="99999999" value="<%= query.max_price || '' %>">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Sort By</label>
+                        <select name="sort_by" class="form-select">
+                            <option value="newest" <%= query.sort_by === 'newest' ? 'selected' : '' %>>Newest</option>
+                            <option value="price_asc" <%= query.sort_by === 'price_asc' ? 'selected' : '' %>>Price Low-High</option>
+                            <option value="price_desc" <%= query.sort_by === 'price_desc' ? 'selected' : '' %>>Price High-Low</option>
+                            <option value="best_rating" <%= query.sort_by === 'best_rating' ? 'selected' : '' %>>Best Rating</option>
+                        </select>
+                    </div>
+                    <div class="col-12 text-end">
+                        <a href="/products" class="btn btn-secondary me-2">Reset</a>
+                        <button type="submit" class="btn btn-primary">🔍 Run Filter (Browse SP)</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <% if (products.length === 0) { %>
+        <div class="col-12 text-center text-muted py-5">
+            <h4>No products found matching parameters.</h4>
+        </div>
+    <% } %>
+
+    <% products.forEach(p => { %>
+        <div class="col-md-3 mb-4">
+            <div class="card h-100">
+                <% if (p.thumbnail) { %>
+                    <img src="<%= p.thumbnail %>" class="card-img-top" alt="<%= p.product_name %>" style="height: 200px; object-fit: cover;">
+                <% } else { %>
+                    <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                        No Image
+                    </div>
+                <% } %>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-truncate" title="<%= p.product_name %>"><%= p.product_name %></h5>
+                    <p class="card-text text-danger fw-bold"><%= p.current_price.toLocaleString() %> đ</p>
+                    <p class="card-text small"><i class="text-warning">★ <%= p.avg_rating %></i> (<%= p.total_reviews %> reviews)</p>
+                    <div class="mt-auto">
+                        <!-- Add to Cart Form -->
+                        <form action="/cart/add" method="POST" class="mb-2">
+                             <div class="input-group input-group-sm">
+                                <input type="number" name="user_id" class="form-control" placeholder="User ID" required style="width: 50px;">
+                                <input type="hidden" name="variant_id" value="<%= p.product_id %>"> <!-- Note: DB expects Variant ID, but browse returns Product ID. We cheat here for demo or need logic to pick variant. Let's Assume 1-to-1 or pick first variant logic needed? Actually browse returns Product. Let's try to pass ProductID as VariantID if they map 1-1 in simple seed? OR we need a "Select Variant" UI. 
+                                For this lab, let's assume we view details first. But for quick add, let's just make it a link to details. -->
+                             </div>
+                             <!-- Actually, let's just keep the VIEW DETAILS button, because we need to select color/size (Variant) to add to cart properly. -->
+                        </form>
+                        <a href="/product/<%= p.product_id %>" class="btn btn-outline-dark w-100">View Details (ID: <%= p.product_id %>)</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% }); %>
+</div>

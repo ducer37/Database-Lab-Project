@@ -1,0 +1,80 @@
+<!-- views/product_detail.ejs -->
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="row g-0">
+                <div class="col-md-4">
+                     <img src="<%= info.thumbnail %>" class="img-fluid rounded-start">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h2 class="card-title"><%= info.name %></h2>
+                        <h4 class="text-danger"><%= info.price.toLocaleString() %> đ</h4>
+                        <p class="card-text"><%= info.description %></p>
+                        <p class="text-muted">⭐ <%= info.rating %> (<%= info.review_count %> reviews)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Variants Section -->
+        <h4 class="mb-3">Select a Variant to Buy:</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Variant ID</th>
+                        <th>Color</th>
+                        <th>Size</th>
+                        <th>Stock</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if(variants && variants.length > 0) { %>
+                        <% variants.forEach(v => { %>
+                            <tr>
+                                <td>#<%= v.id %></td>
+                                <td><%= v.color %></td>
+                                <td><%= v.size %></td>
+                                <td><%= v.stock %></td>
+                                <td>
+                                    <% if (v.stock > 0) { %>
+                                        <form action="/cart/add" method="POST" class="d-flex align-items-center">
+                                            <input type="hidden" name="variant_id" value="<%= v.id %>">
+                                            <input type="number" name="user_id" class="form-control me-2" placeholder="User ID?" required style="width: 100px;">
+                                            <input type="number" name="quantity" class="form-control me-2" value="1" min="1" max="<%= v.stock %>" style="width: 70px;">
+                                            <button type="submit" class="btn btn-primary btn-sm">Add to Cart</button>
+                                        </form>
+                                    <% } else { %>
+                                        <span class="badge bg-secondary">Out of Stock</span>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr><td colspan="5">No variants available.</td></tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Reviews -->
+        <div class="mt-5">
+            <h5>Recent Reviews</h5>
+            <% if(reviews && reviews.length > 0) { %>
+                <ul class="list-group">
+                    <% reviews.forEach(r => { %>
+                        <li class="list-group-item">
+                            <strong><%= r.user_name %></strong> <span class="text-warning">★ <%= r.rating %></span>
+                            <p class="mb-0"><%= r.comment %></p>
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } else { %>
+                <p>No reviews yet.</p>
+            <% } %>
+        </div>
+
+    </div>
+</div>

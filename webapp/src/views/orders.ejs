@@ -1,0 +1,71 @@
+<!-- views/orders.ejs -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card bg-info bg-opacity-10 border-info">
+            <div class="card-body">
+                <form action="/orders" method="GET" class="row align-items-center">
+                    <div class="col-auto">
+                        <label class="fw-bold">My User ID:</label>
+                    </div>
+                    <div class="col-auto">
+                        <input type="number" name="user_id" class="form-control fw-bold text-center text-primary" value="<%= userId || '' %>" required placeholder="Enter ID...">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-info text-white">View My Orders</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<% if (orders && orders.length > 0) { %>
+    <div class="row">
+        <div class="col-12">
+            <h3 class="mb-3">My Order History</h3>
+            <div class="accordion" id="orderAccordion">
+                <% orders.forEach((order, index) => { %>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading<%= index %>">
+                            <button class="accordion-button <%= index !== 0 ? 'collapsed' : '' %>" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%= index %>">
+                                <div class="w-100 d-flex justify-content-between me-3">
+                                    <span>
+                                        <strong>#<%= order.order_id %></strong> 
+                                        <span class="text-muted small ms-2"><%= new Date(order.created_at).toLocaleString() %></span>
+                                    </span>
+                                    <span>
+                                        <span class="badge bg-<%= order.status === 'COMPLETED' ? 'success' : (order.status === 'CANCELLED' ? 'danger' : 'warning') %> me-3">
+                                            <%= order.status %>
+                                        </span>
+                                        <span class="fw-bold text-danger"><%= order.final_amount.toLocaleString() %> đ</span>
+                                    </span>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapse<%= index %>" class="accordion-collapse collapse <%= index === 0 ? 'show' : '' %>" data-bs-parent="#orderAccordion">
+                            <div class="accordion-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Shipping Address:</strong> <%= order.shipping_address %></p>
+                                        <p><strong>Payment:</strong> <%= order.payment_method %> (<%= order.payment_status %>)</p>
+                                    </div>
+                                    <div class="col-md-6 text-end">
+                                        <% if (order.status === 'PENDING') { %>
+                                            <form action="/orders/cancel" method="POST" onsubmit="return confirm('Are you sure?');">
+                                                <input type="hidden" name="user_id" value="<%= userId %>">
+                                                <input type="hidden" name="order_id" value="<%= order.order_id %>">
+                                                <button class="btn btn-outline-danger btn-sm">Cancel Order</button>
+                                            </form>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+<% } else if (userId) { %>
+    <div class="alert alert-warning text-center">No orders found for User ID <%= userId %>.</div>
+<% } %>

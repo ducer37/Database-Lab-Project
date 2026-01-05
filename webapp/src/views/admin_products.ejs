@@ -1,0 +1,78 @@
+<!-- views/admin_products.ejs -->
+<div class="row">
+    <!-- Form Side -->
+    <div class="col-md-4">
+        <div class="card p-3 mb-3">
+            <h4>🛠️ Product Manager</h4>
+            <form action="/admin/products/create" method="POST">
+                <div class="mb-2">
+                    <label>Name</label>
+                    <input type="text" name="name" class="form-control" required placeholder="Product Name">
+                </div>
+                <div class="mb-2">
+                    <label>Slug (Unique)</label>
+                    <input type="text" name="slug" class="form-control" required placeholder="product-slug">
+                </div>
+                <div class="mb-2">
+                    <label>Price</label>
+                    <input type="number" name="price" class="form-control" required>
+                </div>
+                <div class="mb-2">
+                    <label>Original Price</label>
+                    <input type="number" name="original_price" class="form-control" required>
+                </div>
+                <div class="mb-2">
+                    <label>Thumbnail URL</label>
+                    <input type="text" name="thumbnail" class="form-control" placeholder="http://...">
+                </div>
+                <div class="mb-2">
+                    <label>Description</label>
+                    <textarea name="description" class="form-control"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label>Category IDs (JSON Array)</label>
+                    <input type="text" name="category_ids" class="form-control" placeholder="[1, 2]" value="[1]">
+                    <small class="text-muted">Enter as JSON array e.g. [1, 2]</small>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Create Product</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- List Side -->
+    <div class="col-md-8">
+        <div class="card p-3">
+            <h4>📦 Existing Products</h4>
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Categories</th> <!-- We might not have this from browse SP -->
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% products.forEach(p => { %>
+                            <tr>
+                                <td><%= p.product_id %></td>
+                                <td><%= p.product_name %></td>
+                                <td><%= p.current_price %></td>
+                                <td><%= p.category_name %></td>
+                                <td>
+                                    <!-- In a real app we would have Edit/Delete here -->
+                                    <form action="/admin/products/delete" method="POST" class="d-inline" onsubmit="return confirm('Archive this product?');">
+                                        <input type="hidden" name="product_id" value="<%= p.product_id %>">
+                                        <button class="btn btn-sm btn-outline-danger">Del</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

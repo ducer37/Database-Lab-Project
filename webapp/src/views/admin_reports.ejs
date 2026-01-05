@@ -1,0 +1,103 @@
+<!-- views/admin_reports.ejs -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="mb-3">📊 Business Reports</h2>
+        
+        <!-- Date Filter -->
+        <div class="card bg-light mb-4">
+            <div class="card-body">
+                <form action="/admin/reports" method="GET" class="row g-3 align-items-end">
+                    <div class="col-auto">
+                        <label class="form-label fw-bold">From Date</label>
+                        <input type="date" name="start_date" class="form-control" value="<%= startDate %>" required>
+                    </div>
+                    <div class="col-auto">
+                        <label class="form-label fw-bold">To Date</label>
+                        <input type="date" name="end_date" class="form-control" value="<%= endDate %>" required>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">Run Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Revenue Report -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Revenue By Date (Completed Orders)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Orders</th>
+                                        <th>Revenue</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (revenueData.length === 0) { %>
+                                        <tr><td colspan="3" class="text-center">No revenue found in this period.</td></tr>
+                                    <% } %>
+                                    
+                                    <% let totalRev = 0; %>
+                                    <% revenueData.forEach(r => { %>
+                                        <% totalRev += r.total_revenue; %>
+                                        <tr>
+                                            <td><%= new Date(r.sale_date).toLocaleDateString() %></td>
+                                            <td><%= r.total_orders %></td>
+                                            <td class="text-end font-monospace"><%= r.total_revenue.toLocaleString() %></td>
+                                        </tr>
+                                    <% }); %>
+                                    <tr class="table-dark">
+                                        <td colspan="2" class="fw-bold text-end">Total:</td>
+                                        <td class="text-end fw-bold"><%= totalRev.toLocaleString() %> đ</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Best Sellers Report -->
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">🏆 Top 10 Best Sellers</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Sold Qty</th>
+                                        <th>Revenue Generated</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (bestSellers.length === 0) { %>
+                                        <tr><td colspan="3" class="text-center">No data available.</td></tr>
+                                    <% } %>
+
+                                    <% bestSellers.forEach(p => { %>
+                                        <tr>
+                                            <td><%= p.product_name %></td>
+                                            <td class="fw-bold text-center"><%= p.qty_sold %></td>
+                                            <td class="text-end"><%= p.revenue.toLocaleString() %></td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
