@@ -51,6 +51,31 @@ BEGIN
 END;
 GO
 
+-- 1.3. Update Profile
+CREATE OR ALTER PROCEDURE update_profile
+    @p_user_id INT,
+    @p_name NVARCHAR(100) = NULL,
+    @p_phone NVARCHAR(20) = NULL,
+    @p_password NVARCHAR(MAX) = NULL,
+    @p_avatar NVARCHAR(MAX) = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE users
+    SET name = ISNULL(@p_name, name),
+        phone = ISNULL(@p_phone, phone),
+        password = ISNULL(@p_password, password),
+        avatar = ISNULL(@p_avatar, avatar)
+    WHERE id = @p_user_id;
+
+    IF @@ROWCOUNT = 0
+        THROW 50002, 'User ID not found.', 1;
+
+    SELECT 'SUCCESS: Profile updated.' AS result;
+END;
+GO
+
 -- 2. Product browsing
 
 -- 2.1. Search products
@@ -181,9 +206,21 @@ BEGIN
     JOIN products p ON pv.product_id = p.id
     WHERE pv.id = @p_variant_id;
 
+    -- NEW: Get current quantity in cart
+    DECLARE @v_current_cart_qty INT = 0;
+    SELECT @v_current_cart_qty = ISNULL(ci.quantity, 0)
+    FROM cart_items ci
+    JOIN carts c ON ci.cart_id = c.id
+    WHERE c.user_id = @p_user_id AND ci.variant_id = @p_variant_id;
+    
+    SET @v_current_cart_qty = ISNULL(@v_current_cart_qty, 0);
+
     IF @v_stock IS NULL THROW 50011, 'Product variant not found!', 1;
     IF @v_is_active = 0 THROW 50012, 'This product is not sold!', 1;
-    IF @p_quantity > @v_stock THROW 50013, 'Product out of stock!', 1;
+    
+    -- MODIFIED CHECK: Total (In Cart + New) vs Stock
+    IF (@v_current_cart_qty + @p_quantity) > @v_stock 
+       THROW 50013, 'Product out of stock (including items already in your cart)!', 1;
 
     -- Get/Create Cart
     SELECT @v_cart_id = id FROM carts WHERE user_id = @p_user_id;
@@ -539,11 +576,18 @@ BEGIN
         JOIN order_items oi ON pv.id = oi.variant_id
         WHERE oi.order_id = @p_order_id;
 
-        -- Restore Voucher
+        -- Restore Voucher Credit
         UPDATE v
         SET v.stock = v.stock + 1, v.used_count = v.used_count - 1
         FROM vouchers v
         JOIN orders o ON o.voucher_id = v.id
+        WHERE o.id = @p_order_id;
+
+        -- NEW: Restore User Voucher Usage (Reset is_used to 0)
+        UPDATE uv
+        SET uv.is_used = 0
+        FROM user_vouchers uv
+        JOIN orders o ON o.user_id = uv.user_id AND o.voucher_id = uv.voucher_id
         WHERE o.id = @p_order_id;
 
         COMMIT TRANSACTION;
@@ -694,5 +738,60 @@ BEGIN
     FROM addresses
     WHERE user_id = @p_user_id
     ORDER BY is_default DESC, id DESC;
+END;
+GO
+
+-- 6.6 Update Address
+CREATE OR ALTER PROCEDURE update_address
+    @p_address_id INT,
+    @p_user_id INT,
+    @p_recipient_name NVARCHAR(100) = NULL,
+    @p_phone NVARCHAR(20) = NULL,
+    @p_city NVARCHAR(100) = NULL,
+    @p_district NVARCHAR(100) = NULL,
+    @p_ward NVARCHAR(100) = NULL,
+    @p_detail NVARCHAR(MAX) = NULL,
+    @p_is_default BIT = NULL
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE addresses
+    SET recipient_name = ISNULL(@p_recipient_name, recipient_name),
+        phone = ISNULL(@p_phone, phone),
+        city = ISNULL(@p_city, city),
+        district = ISNULL(@p_district, district),
+        ward = ISNULL(@p_ward, ward),
+        detail = ISNULL(@p_detail, detail),
+        is_default = ISNULL(@p_is_default, is_default)
+    WHERE id = @p_address_id AND user_id = @p_user_id;
+
+    IF @@ROWCOUNT = 0 THROW 50033, 'Address not found or unauthorized.', 1;
+
+    -- If set to default, unset others
+    IF @p_is_default = 1
+    BEGIN
+        UPDATE addresses 
+        SET is_default = 0 
+        WHERE user_id = @p_user_id AND id <> @p_address_id;
+    END
+
+    SELECT 'SUCCESS: Address updated.' AS result;
+END;
+GO
+
+-- 6.7 Delete Address
+CREATE OR ALTER PROCEDURE delete_address
+    @p_address_id INT,
+    @p_user_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM addresses WHERE id = @p_address_id AND user_id = @p_user_id;
+
+    IF @@ROWCOUNT = 0 THROW 50034, 'Address not found or unauthorized.', 1;
+
+    SELECT 'SUCCESS: Address deleted.' AS result;
 END;
 GO

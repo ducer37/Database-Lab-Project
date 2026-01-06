@@ -224,10 +224,3 @@ CREATE TABLE banners (
     created_at DATETIME2 DEFAULT GETDATE(),
     updated_at DATETIME2 DEFAULT GETDATE()
 );
-
--- 19. Indexes (Performance Optimization)
-CREATE INDEX IX_Products_Name ON products(name);
-CREATE INDEX IX_Products_Slug ON products(slug);
-CREATE INDEX IX_Products_Price ON products(price);
-CREATE INDEX IX_Orders_Status ON orders(status);
-CREATE INDEX IX_Orders_UserID_Created ON orders(user_id, created_at DESC);

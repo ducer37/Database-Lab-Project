@@ -17,7 +17,7 @@ EXEC cart_add_item @p_user_id = @TestUserID, @p_variant_id = 1, @p_quantity = 2;
 -- Test 3.2: Add another item
 -- Add 1 unit of Variant 5 (Red Dress S, Stock 20)
 PRINT '>> Test 3.2: Add 1 unit of Variant 5 to Cart...';
-EXEC cart_add_item @p_user_id = @TestUserID, @p_variant_id = 5, @p_quantity = 1;
+EXEC cart_add_item @p_user_id = 7, @p_variant_id = 5, @p_quantity = 1;
 
 -- Test 3.3: View Cart Details
 PRINT '>> Test 3.3: View Cart Details';
@@ -69,10 +69,9 @@ SELECT @VoucherID = id FROM vouchers WHERE code = 'WELCOME50';
 -- Run Checkout
 BEGIN TRY
     EXEC checkout 
-        @p_user_id = @TestUserID,
+        @p_user_id = 7,
         @p_address_id = 4,
-        @p_payment_method_id = 2,
-        @p_voucher_id = @VoucherID;
+        @p_payment_method_id = 2
 END TRY
 BEGIN CATCH
     PRINT 'Checkout Error: ' + ERROR_MESSAGE();

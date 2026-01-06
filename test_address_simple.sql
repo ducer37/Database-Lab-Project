@@ -25,7 +25,7 @@ PRINT '   User Created ID: ' + CAST(@v_user_id AS NVARCHAR(20));
 -- 2. Add Address 1 (Default)
 PRINT '>> 2. Add Address 1 (Should be Default)...';
 EXEC add_address 
-    @p_user_id = @v_user_id,
+    @p_user_id = 7,
     @p_recipient_name = 'Home',
     @p_phone = '0909090909',
     @p_city = 'Hanoi',
@@ -46,5 +46,5 @@ EXEC add_address
 
 -- 4. View Addresses
 PRINT '>> 4. View My Addresses...';
-EXEC get_my_addresses @p_user_id = @v_user_id;
+EXEC get_my_addresses @p_user_id = 7;
 GO

@@ -295,7 +295,7 @@ BEGIN
         THROW 50009, 'Order ID not found', 1;
 
     -- Update status
-    UPDATE orders 
+    UPDATE orders            
     SET status = @p_new_status, updated_at = GETDATE() 
     WHERE id = @p_order_id;
 
