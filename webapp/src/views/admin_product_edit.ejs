@@ -1,0 +1,97 @@
+<!-- views/admin_product_edit.ejs -->
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>✏️ Edit Product #<%= info.id %></h2>
+            <a href="/admin/products" class="btn btn-outline-secondary">← Back to List</a>
+        </div>
+
+        <!-- Edit Form -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">Product Information</h5>
+            </div>
+            <div class="card-body">
+                <form action="/admin/products/update" method="POST">
+                    <input type="hidden" name="product_id" value="<%= info.id %>">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Product Name</label>
+                        <input type="text" name="name" class="form-control" value="<%= info.name %>" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Price (VND)</label>
+                            <input type="number" name="price" class="form-control" value="<%= info.price %>" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Original Price (Read-only)</label>
+                            <input type="text" class="form-control" value="<%= info.original_price %>" disabled>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Thumbnail URL</label>
+                        <input type="text" name="thumbnail" class="form-control" value="<%= info.thumbnail %>">
+                        <div class="mt-2">
+                            <img src="<%= info.thumbnail %>" style="height: 100px;" class="rounded border">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea name="description" class="form-control" rows="4"><%= info.description %></textarea>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning btn-lg">💾 Update Product</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Variants Read-only View (To check Stock) -->
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Current Variants & Stock</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Variant ID</th>
+                            <th>Color</th>
+                            <th>Size</th>
+                            <th>Stock</th>
+                            <th>Image</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if(variants && variants.length > 0) { %>
+                            <% variants.forEach(v => { %>
+                                <tr>
+                                    <td><%= v.id %></td>
+                                    <td><%= v.color %></td>
+                                    <td><%= v.size %></td>
+                                    <td class="<%= v.stock < 10 ? 'text-danger fw-bold' : 'text-success' %>"><%= v.stock %></td>
+                                    <td>
+                                        <% if(v.image) { %>
+                                            <img src="<%= v.image %>" style="height: 40px;">
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr><td colspan="5" class="text-center">No variants found.</td></tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer text-muted small">
+                To update stock, please use the specific Upsert Variant function (Not implemented in this view).
+            </div>
+        </div>
+
+    </div>
+</div>

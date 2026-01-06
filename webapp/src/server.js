@@ -423,6 +423,47 @@ app.get('/admin/products', async (req, res) => {
     }
 });
 
+// NEW: Edit Product Page
+app.get('/admin/products/edit/:id', async (req, res) => {
+    try {
+        const result = await req.pool.request()
+            .input('p_product_id', sql.Int, req.params.id)
+            .execute('get_product_details');
+            
+        // The SP returns a single JSON string because of FOR JSON PATH at the end
+        // key look like JSON_F52E2B61-18A1-11d1-B105-00805F49916B
+        const jsonString = Object.values(result.recordset[0])[0]; 
+        const productData = JSON.parse(jsonString);
+        
+        const info = productData.info;
+        const variants = productData.variants;
+
+        res.render('layout', {
+            title: `Edit Product #${req.params.id}`,
+            body: await ejsBody('admin_product_edit', { info, variants })
+        });
+    } catch (err) {
+        res.send(`Error loading product: ${err.message}`);
+    }
+});
+
+// NEW: Update Product Action
+app.post('/admin/products/update', async (req, res) => {
+    try {
+        await req.pool.request()
+            .input('p_product_id', sql.Int, req.body.product_id)
+            .input('p_name', sql.NVarChar, req.body.name)
+            .input('p_price', sql.Decimal(10, 2), req.body.price)
+            .input('p_thumbnail', sql.NVarChar, req.body.thumbnail)
+            .input('p_description', sql.NVarChar, req.body.description)
+            .execute('update_product');
+            
+        res.redirect('/admin/products');
+    } catch (err) {
+        res.send(`Update Failed: ${err.message} <a href="/admin/products/edit/${req.body.product_id}">Try Again</a>`);
+    }
+});
+
 app.post('/admin/products/create', async (req, res) => {
     try {
         await req.pool.request()

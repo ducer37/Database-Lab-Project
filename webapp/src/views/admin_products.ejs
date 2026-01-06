@@ -63,10 +63,13 @@
                                 <td><%= p.category_name %></td>
                                 <td>
                                     <!-- In a real app we would have Edit/Delete here -->
-                                    <form action="/admin/products/delete" method="POST" class="d-inline" onsubmit="return confirm('Archive this product?');">
-                                        <input type="hidden" name="product_id" value="<%= p.product_id %>">
-                                        <button class="btn btn-sm btn-outline-danger">Del</button>
-                                    </form>
+                                    <div class="d-flex gap-2">
+                                        <a href="/admin/products/edit/<%= p.product_id %>" class="btn btn-sm btn-outline-warning">Edit</a>
+                                        <form action="/admin/products/delete" method="POST" onsubmit="return confirm('Delete this product?');">
+                                            <input type="hidden" name="product_id" value="<%= p.product_id %>">
+                                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         <% }); %>
