@@ -163,6 +163,32 @@ app.get('/product/:id', async (req, res) => {
     }
 });
 
+// 1.3 Update Profile (New)
+app.post('/profile/update', async (req, res) => {
+    try {
+        await req.pool.request()
+            .input('p_user_id', sql.Int, req.body.user_id)
+            .input('p_name', sql.NVarChar, req.body.name || null)
+            .input('p_phone', sql.NVarChar, req.body.phone || null)
+            .input('p_password', sql.NVarChar, req.body.password || null)
+            .input('p_avatar', sql.NVarChar, req.body.avatar || null)
+            .execute('update_profile');
+
+        res.render('layout', {
+            title: 'Profile Updated',
+            body: `
+                <div class="alert alert-success text-center">
+                    <h3>✅ Profile Updated Successfully!</h3>
+                    <p>User ID: <strong>${req.body.user_id}</strong> has been updated.</p>
+                    <a href="/" class="btn btn-primary">Back to Login</a>
+                </div>
+            `
+        });
+    } catch (err) {
+        res.render('layout', { title: 'Update Failed', body: `<div class="alert alert-danger">${err.message}</div>` });
+    }
+});
+
 // 3. Auth Routes
 app.get('/login', async (req, res) => {
     try {
@@ -331,6 +357,55 @@ app.post('/addresses/add', async (req, res) => {
             .input('p_district', sql.NVarChar, req.body.district)
             .input('p_detail', sql.NVarChar, req.body.detail)
             .execute('add_address');
+        res.redirect(`/addresses?user_id=${req.body.user_id}`);
+    } catch (err) { res.send(err.message); }
+});
+
+// NEW: Delete Address
+app.post('/addresses/delete', async (req, res) => {
+    try {
+        await req.pool.request()
+            .input('p_address_id', sql.Int, req.body.address_id)
+            .input('p_user_id', sql.Int, req.body.user_id)
+            .execute('delete_address');
+        res.redirect(`/addresses?user_id=${req.body.user_id}`);
+    } catch (err) { res.send(err.message); }
+});
+
+// NEW: Show Edit Address Page
+app.get('/addresses/edit/:id', async (req, res) => {
+    try {
+        const userId = req.query.user_id;
+        // Reuse get_my_addresses and filter in JS (Simple approach)
+        const result = await req.pool.request()
+            .input('p_user_id', sql.Int, userId)
+            .execute('get_my_addresses');
+            
+        const address = result.recordset.find(a => a.address_id == req.params.id);
+        
+        if (!address) throw new Error('Address not found or unauthorized');
+
+        res.render('layout', {
+            title: 'Edit Address',
+            body: await ejsBody('addresses_edit', { userId, address })
+        });
+    } catch (err) { res.send(err.message); }
+});
+
+// NEW: Update Address Action
+app.post('/addresses/update', async (req, res) => {
+    try {
+        await req.pool.request()
+            .input('p_address_id', sql.Int, req.body.address_id)
+            .input('p_user_id', sql.Int, req.body.user_id)
+            .input('p_recipient_name', sql.NVarChar, req.body.recipient_name)
+            .input('p_phone', sql.NVarChar, req.body.phone)
+            .input('p_city', sql.NVarChar, req.body.city)
+            .input('p_district', sql.NVarChar, req.body.district)
+            .input('p_detail', sql.NVarChar, req.body.detail)
+            .input('p_is_default', sql.Bit, req.body.is_default ? 1 : 0)
+            .execute('update_address');
+
         res.redirect(`/addresses?user_id=${req.body.user_id}`);
     } catch (err) { res.send(err.message); }
 });

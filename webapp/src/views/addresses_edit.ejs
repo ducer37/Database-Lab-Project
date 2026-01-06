@@ -1,0 +1,53 @@
+<!-- views/addresses_edit.ejs -->
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">✏️ Edit Address #<%= address.address_id %></h5>
+                <a href="/addresses?user_id=<%= userId %>" class="btn btn-sm btn-outline-dark">Cancel</a>
+            </div>
+            <div class="card-body">
+                <form action="/addresses/update" method="POST">
+                    <input type="hidden" name="user_id" value="<%= userId %>">
+                    <input type="hidden" name="address_id" value="<%= address.address_id %>">
+
+                    <div class="mb-3">
+                        <label class="form-label">Recipient Name</label>
+                        <input type="text" name="recipient_name" class="form-control" value="<%= address.recipient_name %>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Phone</label>
+                        <input type="text" name="phone" class="form-control" value="<%= address.phone %>" required>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label">City</label>
+                            <input type="text" name="city" class="form-control" value="<%= address.city %>" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label">District</label>
+                            <input type="text" name="district" class="form-control" value="<%= address.district %>">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Detailed Address</label>
+                        <textarea name="detail" class="form-control" required rows="3"><%= address.detail %></textarea>
+                    </div>
+
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" name="is_default" value="1" id="defaultCheck" <%= address.is_default ? 'checked' : '' %>>
+                        <label class="form-check-label" for="defaultCheck">
+                            Set as Default Address
+                        </label>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Update Address</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

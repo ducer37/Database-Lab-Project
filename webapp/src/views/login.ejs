@@ -10,6 +10,9 @@
             <li class="nav-item">
                 <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register" type="button">Register</button>
             </li>
+            <li class="nav-item">
+                <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button">Update Profile</button>
+            </li>
         </ul>
 
         <div class="tab-content" id="authTabContent">
@@ -51,6 +54,36 @@
                             <input type="password" name="password" class="form-control" required>
                         </div>
                         <button type="submit" class="btn btn-success w-100">Register New User</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Update Profile Form (User Request) -->
+            <div class="tab-pane fade" id="profile">
+                <div class="card p-4">
+                    <div class="alert alert-info">Enter User ID and details to update. Leave blank to keep existing.</div>
+                    <form action="/profile/update" method="POST">
+                        <div class="mb-3">
+                            <label class="fw-bold">User ID (Required)</label>
+                            <input type="number" name="user_id" class="form-control" required placeholder="Enter your User ID">
+                        </div>
+                        <div class="mb-3">
+                            <label>New Name</label>
+                            <input type="text" name="name" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label>New Phone</label>
+                            <input type="text" name="phone" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label>New Password</label>
+                            <input type="password" name="password" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label>New Avatar URL</label>
+                            <input type="text" name="avatar" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">Update Profile</button>
                     </form>
                 </div>
             </div>

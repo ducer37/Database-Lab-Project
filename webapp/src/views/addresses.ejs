@@ -63,6 +63,14 @@
                                 <div class="text-end">
                                     <span class="badge bg-warning text-dark fs-6">ID: <%= a.address_id %></span>
                                     <div class="small text-muted mt-1">Use this ID at Checkout</div>
+                                    <div class="mt-2 d-flex justify-content-end gap-2">
+                                        <a href="/addresses/edit/<%= a.address_id %>?user_id=<%= userId %>" class="btn btn-sm btn-outline-primary">Edit</a>
+                                        <form action="/addresses/delete" method="POST" onsubmit="return confirm('Delete this address?');">
+                                            <input type="hidden" name="address_id" value="<%= a.address_id %>">
+                                            <input type="hidden" name="user_id" value="<%= userId %>">
+                                            <button class="btn btn-sm btn-outline-danger">Delete</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         <% }); %>
