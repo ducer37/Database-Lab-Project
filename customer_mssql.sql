@@ -1,4 +1,4 @@
-USE ECommerceDB1;
+USE ECommerceDBTest;
 GO
 CREATE OR ALTER PROCEDURE register_user
     @p_email NVARCHAR(255),

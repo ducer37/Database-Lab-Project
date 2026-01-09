@@ -1,6 +1,6 @@
 -- INSERT DATA FOR SQL SERVER (Test Data)
 -- Run this after running create_tables_mssql.sql
-USE ECommerceDB1;
+USE ECommerceDBTest;
 GO
 -- 1. Insert Users
 INSERT INTO users (email, password, name, phone, role, avatar) VALUES 

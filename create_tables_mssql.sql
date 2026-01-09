@@ -1,6 +1,6 @@
-CREATE DATABASE ECommerceDB1;
+CREATE DATABASE ECommerceDBTest;
 GO
-USE ECommerceDB1;
+USE ECommerceDBTest;
 GO
 
 
