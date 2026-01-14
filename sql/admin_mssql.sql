@@ -1,5 +1,5 @@
 -- Admin Logic for SQL Server (Transact-SQL)
-USE ECommerceDBDemo1;
+USE ECommerceDBDemo2;
 GO
 -- 1. Product Management
 

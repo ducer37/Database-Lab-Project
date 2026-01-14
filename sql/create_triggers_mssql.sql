@@ -1,4 +1,4 @@
-USE ECommerceDBDemo1;
+USE ECommerceDBDemo2;
 GO
 
 CREATE OR ALTER TRIGGER trg_prevent_negative_stock

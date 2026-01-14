@@ -1,6 +1,6 @@
 -- INSERT DATA FOR SQL SERVER (Test Data)
 -- Run this after running create_tables_mssql.sql
-USE ECommerceDBDemo1;
+USE ECommerceDBDemo2;
 GO
 -- 1. Insert Users
 INSERT INTO users (email, password, name, phone, role, avatar) VALUES 
@@ -33,9 +33,9 @@ SET IDENTITY_INSERT categories OFF;
 -- 5. Insert Products
 SET IDENTITY_INSERT products ON;
 INSERT INTO products (id, name, slug, description, original_price, price, thumbnail, is_active, rating, review_count) VALUES 
-(1, 'Classic White T-Shirt', 'classic-white-tshirt', 'Premium cotton t-shirt', 200000, 150000, 'https://example.com/tshirt.jpg', 1, 4.5, 2),
-(2, 'Summer Floral Dress', 'summer-floral-dress', 'Lightweight summer dress', 500000, 450000, 'https://example.com/dress.jpg', 1, 5.0, 1),
-(3, 'Leather Belt', 'leather-belt', 'Genuine leather belt', 300000, 250000, 'https://example.com/belt.jpg', 1, 0, 0),
+(1, 'Classic White T-Shirt', 'classic-white-tshirt', 'Premium cotton t-shirt', 200000, 150000, 'https://isto.pt/cdn/shop/files/Classic_TShirt_White_2.webp?v=1765458167', 1, 4.5, 2),
+(2, 'Summer Floral Dress', 'summer-floral-dress', 'Lightweight summer dress', 500000, 450000, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpEpTdC1_Rb9LwH6vDM-T_MlQ3kmYp7TYotw&s', 1, 5.0, 1),
+(3, 'Leather Belt', 'leather-belt', 'Genuine leather belt', 300000, 250000, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf-EoB9COi9CA7DVoSCsQ6QQ8TPwAo_FXcAw&s', 1, 0, 0),
 (4, 'Discontinued Jacket', 'old-jacket', 'Old winter collection', 1000000, 500000, 'https://example.com/jacket.jpg', 0, 0, 0); -- Inactive
 SET IDENTITY_INSERT products OFF;
 

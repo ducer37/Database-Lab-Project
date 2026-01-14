@@ -1,4 +1,4 @@
-USE ECommerceDBDemo1;
+USE ECommerceDBDemo2;
 GO
 
 -- 2.1. CUSTOMER FEATURES OPTIMIZATION
