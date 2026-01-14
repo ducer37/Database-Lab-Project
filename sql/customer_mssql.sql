@@ -1,5 +1,6 @@
 USE ECommerceDBDemo2;
 GO
+
 CREATE OR ALTER PROCEDURE register_user
     @p_email NVARCHAR(255),
     @p_password NVARCHAR(MAX),
@@ -15,8 +16,12 @@ BEGIN
         RETURN;
     END
 
+    -- Hash password using SHA2_256 and convert to hex string
+    DECLARE @hashed_password NVARCHAR(MAX);
+    SET @hashed_password = CONVERT(NVARCHAR(MAX), HASHBYTES('SHA2_256', @p_password), 2);
+
     INSERT INTO users (email, password, name, phone, role)
-    VALUES (@p_email, @p_password, @p_name, @p_phone, 'CUSTOMER');
+    VALUES (@p_email, @hashed_password, @p_name, @p_phone, 'CUSTOMER');
 
     DECLARE @new_id INT = SCOPE_IDENTITY();
     SELECT CONCAT('SUCCESS: Successfully register new account. User ID: ', @new_id) AS result;
@@ -32,9 +37,13 @@ BEGIN
     SET NOCOUNT ON;
     DECLARE @v_user_id INT, @v_role NVARCHAR(50), @v_name NVARCHAR(100), @v_avatar NVARCHAR(MAX);
 
+    -- Hash the input password and compare with stored hash
+    DECLARE @hashed_password NVARCHAR(MAX);
+    SET @hashed_password = CONVERT(NVARCHAR(MAX), HASHBYTES('SHA2_256', @p_password), 2);
+
     SELECT @v_user_id = id, @v_role = role, @v_name = name, @v_avatar = avatar
     FROM users 
-    WHERE email = @p_email AND password = @p_password;
+    WHERE email = @p_email AND password = @hashed_password;
 
     IF @v_user_id IS NULL
         THROW 50001, 'Invalid email or password.', 1;
