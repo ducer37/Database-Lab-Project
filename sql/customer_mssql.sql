@@ -1,4 +1,4 @@
-USE ECommerceDBTest;
+USE ECommerceDBDemo1;
 GO
 CREATE OR ALTER PROCEDURE register_user
     @p_email NVARCHAR(255),
@@ -32,7 +32,6 @@ BEGIN
     SET NOCOUNT ON;
     DECLARE @v_user_id INT, @v_role NVARCHAR(50), @v_name NVARCHAR(100), @v_avatar NVARCHAR(MAX);
 
-    -- Simple Plain Text Password Check (For Demo/Lab purpose)
     SELECT @v_user_id = id, @v_role = role, @v_name = name, @v_avatar = avatar
     FROM users 
     WHERE email = @p_email AND password = @p_password;
@@ -206,7 +205,7 @@ BEGIN
     JOIN products p ON pv.product_id = p.id
     WHERE pv.id = @p_variant_id;
 
-    -- NEW: Get current quantity in cart
+    -- Get current quantity in cart
     DECLARE @v_current_cart_qty INT = 0;
     SELECT @v_current_cart_qty = ISNULL(ci.quantity, 0)
     FROM cart_items ci
@@ -218,7 +217,7 @@ BEGIN
     IF @v_stock IS NULL THROW 50011, 'Product variant not found!', 1;
     IF @v_is_active = 0 THROW 50012, 'This product is not sold!', 1;
     
-    -- MODIFIED CHECK: Total (In Cart + New) vs Stock
+    -- Total (In Cart + New) vs Stock
     IF (@v_current_cart_qty + @p_quantity) > @v_stock 
        THROW 50013, 'Product out of stock (including items already in your cart)!', 1;
 
@@ -527,7 +526,6 @@ END;
 GO
 
 -- 5. Order Tracking & Wishlist/Review
--- (Simplified basic SELECTs below for brevity, similar translation logic applies)
 
 -- 5.1. View Order History
 CREATE OR ALTER PROCEDURE view_order_history

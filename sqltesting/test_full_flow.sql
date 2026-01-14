@@ -29,8 +29,9 @@ PRINT '>>> STEP 2: ADD SHIPPING ADDRESS';
 PRINT '==================================================';
 DECLARE @UserID INT; SELECT TOP 1 @UserID = id FROM users WHERE email LIKE 'flow_test_%' ORDER BY id DESC;
 
+
 -- Add Address
-EXEC add_address @UserID, 'Test Receiver', '0912345678', 'Hanoi', 'Cau Giay', 'Dich Vong', '123 Xuan Thuy';
+EXEC add_address @UserID, 'Test Receiver', '0912345678', 'Hanoi', 'Cau Giay', 'Dich Vong';
 
 -- VERIFY
 PRINT 'Expected Check: An address row should appear with is_default = 1.';

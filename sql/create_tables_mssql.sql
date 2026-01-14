@@ -1,11 +1,10 @@
-CREATE DATABASE ECommerceDBTest;
+CREATE DATABASE ECommerceDBDemo1;
 GO
-USE ECommerceDBTest;
+USE ECommerceDBDemo1;
 GO
 
 
 -- 1. Users Table
--- Replaced ENUM 'role' with CHECK constraint
 CREATE TABLE users (
     id INT IDENTITY(1,1) PRIMARY KEY,
     email NVARCHAR(255) UNIQUE NOT NULL,
@@ -137,7 +136,6 @@ CREATE TABLE vouchers (
 );
 
 -- 12. Orders
--- Replaced ENUMs with CHECK constraints
 CREATE TABLE orders (
     id INT IDENTITY(1,1) PRIMARY KEY,
     user_id INT NOT NULL,
@@ -152,7 +150,7 @@ CREATE TABLE orders (
     payment_status NVARCHAR(20) DEFAULT 'UNPAID',
     created_at DATETIME2 DEFAULT GETDATE(),
     updated_at DATETIME2 DEFAULT GETDATE(),
-    FOREIGN KEY (user_id) REFERENCES users(id), -- No Cascade on Order usually, to keep history
+    FOREIGN KEY (user_id) REFERENCES users(id), 
     FOREIGN KEY (voucher_id) REFERENCES vouchers(id),
     CONSTRAINT CK_Order_Status CHECK (status IN ('PENDING', 'CONFIRMED', 'SHIPPING', 'COMPLETED', 'CANCELLED', 'RETURNED')),
     CONSTRAINT CK_Payment_Status CHECK (payment_status IN ('PAID', 'UNPAID', 'REFUNDED'))
@@ -166,7 +164,7 @@ CREATE TABLE order_items (
     quantity INT NOT NULL,
     price DECIMAL(10,2) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
-    FOREIGN KEY (variant_id) REFERENCES product_variants(id), -- Keep link strictly, or set null? Usually keep.
+    FOREIGN KEY (variant_id) REFERENCES product_variants(id), 
     CONSTRAINT UQ_Order_Variant UNIQUE (order_id, variant_id)
 );
 
@@ -199,7 +197,7 @@ CREATE TABLE reviews (
     rating INT NOT NULL,
     comment NVARCHAR(MAX),
     created_at DATETIME2 DEFAULT GETDATE(),
-    FOREIGN KEY (user_id) REFERENCES users(id), -- Maybe cascade?
+    FOREIGN KEY (user_id) REFERENCES users(id), 
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
 

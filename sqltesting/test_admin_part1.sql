@@ -1,7 +1,9 @@
 -- TEST ADMIN FEATURES - PART 1: PRODUCTS & PROMOTIONS
 -- Run this in SSMS/Azure Data Studio
-USE ECommerceDB;
+USE ECommerceDB1;
 GO
+
+SELECT * FROM products;
 
 PRINT '=============================================';
 PRINT '       TESTING PRODUCT MANAGEMENT';

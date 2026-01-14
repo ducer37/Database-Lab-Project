@@ -92,12 +92,34 @@
         <% if (typeof userId !== 'undefined') { %>
             <div class="alert alert-success mt-4 text-center">
                 <h4>🎉 Operation Successful!</h4>
-                <p>Your User ID is:</p>
-                <h1 class="display-3 fw-bold text-danger"><%= userId %></h1>
+                
+                <% if (typeof userName !== 'undefined' && userName) { %>
+                    <!-- Full Profile Display (from Login) -->
+                    <div class="text-start mb-3">
+                        <% if (typeof userAvatar !== 'undefined' && userAvatar) { %>
+                            <div class="text-center mb-3">
+                                <img src="<%= userAvatar %>" alt="Avatar" class="rounded-circle" style="width: 80px; height: 80px; object-fit: cover;">
+                            </div>
+                        <% } %>
+                        <table class="table table-bordered">
+                            <tr><th>User ID</th><td><strong class="text-danger"><%= userId %></strong></td></tr>
+                            <tr><th>Name</th><td><%= userName %></td></tr>
+                            <tr><th>Email</th><td><%= userEmail %></td></tr>
+                            <tr><th>Role</th><td><span class="badge <%= userRole === 'ADMIN' ? 'bg-danger' : 'bg-primary' %>"><%= userRole %></span></td></tr>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <!-- Simple ID Display (from Register) -->
+                    <p>Your User ID is:</p>
+                    <h1 class="display-3 fw-bold text-danger"><%= userId %></h1>
+                <% } %>
+                
                 <p>⚠️ Copy this ID to use in Cart actions.</p>
                 <div class="d-grid gap-2">
                     <a href="/products" class="btn btn-outline-dark">Go to Products</a>
                     <a href="/cart?user_id=<%= userId %>" class="btn btn-outline-dark">Go to Cart</a>
+                    <a href="/addresses?user_id=<%= userId %>" class="btn btn-outline-secondary">My Addresses</a>
+                    <a href="/orders?user_id=<%= userId %>" class="btn btn-outline-secondary">My Orders</a>
                 </div>
             </div>
         <% } %>

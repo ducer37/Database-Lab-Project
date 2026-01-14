@@ -1,5 +1,4 @@
--- Optimizing E-Commerce Database Performance
-USE ECommerceDB1;
+USE ECommerceDBDemo1;
 GO
 
 -- 2.1. CUSTOMER FEATURES OPTIMIZATION
@@ -7,7 +6,7 @@ GO
 -- Optimize: Browse Products (Newest & Active)
 CREATE NONCLUSTERED INDEX idx_products_active_newest 
 ON products(is_active, created_at DESC) 
-INCLUDE (name, price, thumbnail, rating, review_count); -- Covering index for list view
+INCLUDE (name, price, thumbnail, rating, review_count); 
 GO
 
 -- Optimize: Browse Products (Filter by Category)
@@ -17,7 +16,6 @@ INCLUDE (product_id);
 GO
 
 -- Optimize: Browse Products (Filter by Price)
--- Note: Replaces basic IX_Products_Price if exists, or serves as more specific range scan
 IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = 'idx_products_price' AND object_id = OBJECT_ID('products'))
 BEGIN
     CREATE NONCLUSTERED INDEX idx_products_price 
@@ -27,7 +25,6 @@ END
 GO
 
 -- Optimize: Search Products by Name
--- Note: create_tables_mssql.sql already has IX_Products_Name, this might be redundant or an enhancement
 IF NOT EXISTS(SELECT * FROM sys.indexes WHERE name = 'idx_products_name' AND object_id = OBJECT_ID('products'))
 BEGIN
     CREATE NONCLUSTERED INDEX idx_products_name 
@@ -91,5 +88,3 @@ CREATE NONCLUSTERED INDEX idx_order_items_variant_id
 ON order_items(variant_id) 
 INCLUDE (quantity, price);
 GO
-
-PRINT 'SUCCESS: Performance Indexes Created Successfully.';

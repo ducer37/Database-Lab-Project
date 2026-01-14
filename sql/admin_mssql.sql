@@ -1,10 +1,9 @@
 -- Admin Logic for SQL Server (Transact-SQL)
-USE ECommerceDBTest;
+USE ECommerceDBDemo1;
 GO
 -- 1. Product Management
 
 -- 1.1. Create new product
--- Changed p_category_ids from INT[] to NVARCHAR(MAX) (JSON Array "[1, 2]")
 CREATE OR ALTER PROCEDURE create_product
     @p_name NVARCHAR(200),
     @p_slug NVARCHAR(200), 
@@ -12,7 +11,7 @@ CREATE OR ALTER PROCEDURE create_product
     @p_original_price DECIMAL(10,2),
     @p_price DECIMAL(10,2),
     @p_thumbnail NVARCHAR(MAX),
-    @p_category_ids NVARCHAR(MAX) -- Pass as JSON array: '[1, 2]'
+    @p_category_ids NVARCHAR(MAX) 
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -286,9 +285,9 @@ BEGIN
     SET NOCOUNT ON;
     DECLARE @v_current_status NVARCHAR(20);
 
-    -- Check and Lock (Logic only, explicit lock strictness varies in SQL Server/T-SQL)
+    -- Check and Lock
     SELECT @v_current_status = status 
-    FROM orders WITH (UPDLOCK) -- Equivalent to FOR UPDATE
+    FROM orders WITH (UPDLOCK) 
     WHERE id = @p_order_id;
 
     IF @v_current_status IS NULL

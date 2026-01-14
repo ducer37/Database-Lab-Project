@@ -234,20 +234,19 @@ app.post('/login', async (req, res) => {
         
         // Result is JSON string in column [0]
         const userJson = result.recordset[0]; 
-        // It returns a single row if using FOR JSON PATH without array wrapper in SP? 
-        // Actually the SP says: FOR JSON PATH, WITHOUT_ARRAY_WRAPPER. 
-        // But mssql driver usually returns the JSON string as a value of a key (e.g. JSON_F52E...)
-        
-        // Let's parse the values directly from columns if it wasn't FOR JSON?
-        // Wait, the SP uses 'FOR JSON PATH, WITHOUT_ARRAY_WRAPPER'.
-        // So `recordset` will be like [ { "JSON_F52E...": "{...}" } ]
-        
         const key = Object.keys(userJson)[0];
         const userData = JSON.parse(userJson[key]);
 
         res.render('layout', { 
             title: 'Login Success', 
-            body: await ejsBody('login', { userId: userData.user_id, success: 'Logged In!' }) 
+            body: await ejsBody('login', { 
+                userId: userData.user_id,
+                userName: userData.name,
+                userEmail: userData.email,
+                userRole: userData.role,
+                userAvatar: userData.avatar,
+                success: 'Logged In!' 
+            }) 
         });
 
     } catch (err) {
