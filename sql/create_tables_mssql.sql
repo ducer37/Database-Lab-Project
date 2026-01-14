@@ -1,6 +1,6 @@
-CREATE DATABASE ECommerceDBDemo2;
+CREATE DATABASE ECommerceDBDemo5;
 GO
-USE ECommerceDBDemo2;
+USE ECommerceDBDemo5;
 GO
 
 

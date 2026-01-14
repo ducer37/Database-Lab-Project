@@ -292,6 +292,19 @@ app.get('/cart', async (req, res) => {
     }
 });
 
+app.post('/cart/update', async (req, res) => {
+    try {
+        await req.pool.request()
+            .input('p_user_id', sql.Int, req.body.user_id)
+            .input('p_variant_id', sql.Int, req.body.variant_id)
+            .input('p_new_quantity', sql.Int, req.body.quantity)
+            .execute('cart_update_item_quantity');
+        res.redirect(`/cart?user_id=${req.body.user_id}`);
+    } catch (err) { 
+        res.send(`Error updating cart: ${err.message} <br> <a href="/cart?user_id=${req.body.user_id}">Back</a>`); 
+    }
+});
+
 app.post('/cart/remove', async (req, res) => {
     try {
         await req.pool.request()
